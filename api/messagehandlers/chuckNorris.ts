@@ -1,5 +1,5 @@
 import { Update } from "../../telegramTypes";
-import { sendMessage } from "../utilities";
+import { sendMessage, sendMarkdownMessage } from "../utilities";
 import fetch from "node-fetch";
 
 type chuckNorrisJson = {
@@ -13,6 +13,7 @@ type chuckNorrisJson = {
 };
 
 function canHandle(update: Update) {
+  if (!update.message.text) return false;
   return /.*(chuck|norris).*/gi.test(update.message.text);
 }
 
@@ -22,7 +23,12 @@ async function handle(update: Update) {
   );
   const chuckFactJson = (await chuckFactApiResponse.json()) as chuckNorrisJson;
   console.log("chuck norris fact:", chuckFactJson.value);
-  await sendMessage(chuckFactJson.value, update.message.chat.id);
+  const markdown = `${chuckFactJson.value}`;
+  await sendMarkdownMessage(
+    markdown,
+    update.message.chat.id,
+    update.message.message_id
+  );
 }
 
 export default {
