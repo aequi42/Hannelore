@@ -1,8 +1,9 @@
 import { Update } from "../../telegramTypes";
 import { sendMessage } from "../utilities";
+import { addHandler } from ".";
 
 function canHandle(update: Update) {
-  if (!update.message || ! update.message.text) return false;
+  if (!update.message || !update.message.text) return false;
   return update.message.text.indexOf("Hannelore, wiederhole:") == 0;
 }
 
@@ -13,7 +14,7 @@ async function handle(update: Update) {
   await sendMessage(`Sehr gerne: "${stringToEcho}"`, update.message.chat.id);
 }
 
-export default {
+addHandler({
   canHandle,
   handle
-};
+});

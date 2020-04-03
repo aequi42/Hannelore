@@ -1,2 +1,12 @@
-export { default as echo } from "./echo";
-export { default as chuckNorris } from "./chuckNorris";
+import { Handler } from "./handler";
+
+
+const AllHandlers: Handler[] = [];
+
+export function addHandler(handler: Handler) {
+  AllHandlers.push(handler);
+}
+
+export function getAllHandler() {
+  return AllHandlers;
+}

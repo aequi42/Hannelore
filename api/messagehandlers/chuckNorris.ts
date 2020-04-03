@@ -1,6 +1,8 @@
 import { Update } from "../../telegramTypes";
 import { sendMessage, sendMarkdownMessage } from "../utilities";
 import fetch from "node-fetch";
+import { addHandler } from ".";
+
 
 type chuckNorrisJson = {
   categories: string[];
@@ -24,14 +26,14 @@ async function handle(update: Update) {
   const chuckFactJson = (await chuckFactApiResponse.json()) as chuckNorrisJson;
   console.log("chuck norris fact:", chuckFactJson.value);
   const markdown = `${chuckFactJson.value}`;
-  await sendMarkdownMessage(
+  return await sendMarkdownMessage(
     markdown,
     update.message.chat.id,
     update.message.message_id
   );
 }
 
-export default {
+addHandler({
   canHandle,
   handle
-};
+});

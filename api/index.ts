@@ -1,17 +1,17 @@
 import { Update, Message } from "../telegramTypes";
-import { echo, chuckNorris } from "./messagehandlers";
+import { getAllHandler } from "./messagehandlers";
 
 type request = {
   body: Update;
 };
 
-const handlers = [echo, chuckNorris];
-
 export default async (req: request, res) => {
   console.log("[BOT] Incoming Request!");
   const { body } = req;
   console.log(JSON.stringify(body, null, 2));
+  const handlers = getAllHandler();
   const matchingHandler = handlers.find(h => h.canHandle(body));
-  if (matchingHandler) await matchingHandler.handle(body);
-  res.end();
+  if (!matchingHandler) res.end(true);
+  await matchingHandler.handle(body);
+  res.end(true);
 };
