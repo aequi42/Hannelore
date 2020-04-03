@@ -61,3 +61,23 @@ async function handleMessage(payload: SendMessage) {
     body: JSON.stringify(payload)
   });
 }
+
+export async function sendPhoto(
+  imageUrl: string,
+  caption: string,
+  chat_id: string | number
+) {
+  const url = `https://api.telegram.org/bot${API_TOKEN}/sendPhoto`;
+  await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      chat_id,
+      photo: imageUrl,
+      caption,
+      disable_notification: true
+    })
+  });
+}
