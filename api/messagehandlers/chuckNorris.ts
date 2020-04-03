@@ -13,7 +13,7 @@ type chuckNorrisJson = {
 };
 
 function canHandle(update: Update) {
-  if (!update.message.text) return false;
+  if (!update.message || !update.message.text) return false;
   return /.*(chuck|norris).*/gi.test(update.message.text);
 }
 

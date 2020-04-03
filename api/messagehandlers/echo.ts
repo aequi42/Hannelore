@@ -2,7 +2,7 @@ import { Update } from "../../telegramTypes";
 import { sendMessage } from "../utilities";
 
 function canHandle(update: Update) {
-  if (!update.message.text) return false;
+  if (!update.message || ! update.message.text) return false;
   return update.message.text.indexOf("Hannelore, wiederhole:") == 0;
 }
 

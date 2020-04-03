@@ -5,8 +5,6 @@ type request = {
   body: Update;
 };
 
-console.log("echo:", JSON.stringify(echo, null, 2));
-console.log("chuckNorris:", JSON.stringify(chuckNorris, null, 2));
 const handlers = [echo, chuckNorris];
 
 export default async (req: request, res) => {
