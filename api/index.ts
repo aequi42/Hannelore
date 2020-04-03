@@ -14,6 +14,6 @@ export default async (req: request, res) => {
   const { body } = req;
   console.log(JSON.stringify(body, null, 2));
   const matchingHandler = handlers.find(h => h.canHandle(body));
-  await matchingHandler.handle(body);
+  if (matchingHandler) await matchingHandler.handle(body);
   res.end();
 };
