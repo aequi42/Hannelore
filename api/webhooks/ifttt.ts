@@ -1,16 +1,22 @@
 import { sendMarkupMessage, sendPhoto } from "../../utilities";
 
 const GROUPCHAT_ID = process.env.GROUPCHAT_ID || -271216047;
+
 type request = {
   body: {
-    img?: string;
+    img: string;
+    message: string;
   };
 };
+
 export default async (req: request, res) => {
-  console.log("[BOT] Incoming Request for IFTTT! (reddit)");
+  console.log("[BOT] Incoming Request for IFTTT!");
   const { body } = req;
   console.log(JSON.stringify(body, null, 2));
-  const message = `Ihr mögt doch diese sogenannten Memes, oder? Folgendes ist gerade auf Reddit im Trend!`;
-  await sendPhoto(body.img, message, GROUPCHAT_ID);
+  if (body.img) {
+    await sendPhoto(body.img, body.message, GROUPCHAT_ID);
+  } else {
+    await sendMarkupMessage(body.message, GROUPCHAT_ID);
+  }
   res.end();
 };

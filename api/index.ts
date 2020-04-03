@@ -1,5 +1,6 @@
 import { Update, Message } from "../telegramTypes";
-import { getAllHandler } from "./messagehandlers";
+import { getAllHandler } from "../messagehandlers";
+
 
 type request = {
   body: Update;
@@ -10,8 +11,15 @@ export default async (req: request, res) => {
   const { body } = req;
   console.log(JSON.stringify(body, null, 2));
   const handlers = getAllHandler();
+  console.log(`all ${handlers.length} handlers`);
+
   const matchingHandler = handlers.find(h => h.canHandle(body));
-  if (!matchingHandler) res.end(true);
+  if (!matchingHandler) {
+    console.log(`[BOT] no matching handler found!`);
+    res.end();
+    return;
+  }
+  console.log(`[BOT] matching handler: ${matchingHandler.name}`);
   await matchingHandler.handle(body);
-  res.end(true);
+  res.end();
 };

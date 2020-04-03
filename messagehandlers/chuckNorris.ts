@@ -1,8 +1,6 @@
-import { Update } from "../../telegramTypes";
+import { Update } from "../telegramTypes";
 import { sendMessage, sendMarkdownMessage } from "../utilities";
 import fetch from "node-fetch";
-import { addHandler } from ".";
-
 
 type chuckNorrisJson = {
   categories: string[];
@@ -33,7 +31,8 @@ async function handle(update: Update) {
   );
 }
 
-addHandler({
+export default {
+  name: "chuckNorris",
   canHandle,
   handle
-});
+};

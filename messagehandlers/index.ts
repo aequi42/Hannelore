@@ -1,7 +1,9 @@
 import { Handler } from "./handler";
+import chuckHandler from "./chuckNorris";
+import echoHandler from "./echo";
 
+const AllHandlers: Handler[] = [chuckHandler, echoHandler];
 
-const AllHandlers: Handler[] = [];
 
 export function addHandler(handler: Handler) {
   AllHandlers.push(handler);

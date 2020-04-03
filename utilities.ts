@@ -52,14 +52,16 @@ export async function sendMessage(
 
 async function handleMessage(payload: SendMessage) {
   const url = `https://api.telegram.org/bot${API_TOKEN}/sendMessage`;
-  console.log(`sedning Message to ${url}`);
-  return fetch(url, {
+  console.log(`sending Message to ${url}`);
+  var response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(payload)
   });
+  console.log(JSON.stringify(response, null, 2));
+  return response;
 }
 
 export async function sendPhoto(
@@ -68,7 +70,8 @@ export async function sendPhoto(
   chat_id: string | number
 ) {
   const url = `https://api.telegram.org/bot${API_TOKEN}/sendPhoto`;
-  return fetch(url, {
+  console.log(`sending Photo to ${url}`);
+  var response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -80,4 +83,6 @@ export async function sendPhoto(
       disable_notification: true
     })
   });
+  console.log(JSON.stringify(response, null, 2));
+  return response;
 }
