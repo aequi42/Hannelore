@@ -11,6 +11,6 @@ export default async (req: request, res) => {
   const { body } = req;
   console.log(JSON.stringify(body, null, 2));
   const message = `Ihr mögt doch diese sogenannten Memes, oder? Folgendes ist gerade auf Reddit im Trend!`;
-  sendPhoto(body.img, message, GROUPCHAT_ID);
+  await sendPhoto(body.img, message, GROUPCHAT_ID);
   res.end();
 };

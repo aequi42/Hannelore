@@ -19,6 +19,6 @@ export default async (req: request, res) => {
 
 Die Vorhersage für heute ist: ${body.condition}.
 Mit Temparaturen von <b>${body.high}°C</b> bis <b>${body.low}°C</b>.`;
-  sendMarkupMessage(message, GROUPCHAT_ID);
+  await sendMarkupMessage(message, GROUPCHAT_ID);
   res.end();
 };

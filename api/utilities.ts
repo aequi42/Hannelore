@@ -53,7 +53,7 @@ export async function sendMessage(
 async function handleMessage(payload: SendMessage) {
   const url = `https://api.telegram.org/bot${API_TOKEN}/sendMessage`;
   console.log(`sedning Message to ${url}`);
-  await fetch(url, {
+  return fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -68,7 +68,7 @@ export async function sendPhoto(
   chat_id: string | number
 ) {
   const url = `https://api.telegram.org/bot${API_TOKEN}/sendPhoto`;
-  await fetch(url, {
+  return fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
