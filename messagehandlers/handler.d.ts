@@ -4,5 +4,5 @@ import { Response } from "node-fetch";
 export interface Handler{
   name: string
   canHandle(update: Update): boolean
-  handle(update: Update): Promise<Response>
+  handle(update: Update): Promise<any>
 }
