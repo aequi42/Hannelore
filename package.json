@@ -1,0 +1,18 @@
+{
+  "name": "hannelore",
+  "version": "1.0.0",
+  "description": "Custom Telegrambot",
+  "main": "index.ts",
+  "author": "aequi42 <aequi42@users.noreply.github.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node-fetch": "^2.5.5",
+    "now": "^17.1.1"
+  },
+  "scripts": {
+    "deploy": "now"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.0"
+  }
+}
