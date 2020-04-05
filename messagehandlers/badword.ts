@@ -32,6 +32,7 @@ function canHandle(update: Update) {
 
 function handle(update: Update) {
   const badword = foundBadwords.get(update.update_id);
+  foundBadwords.delete(update.update_id);
   const message = `Nanana ${update.message.from.first_name}, ${badword} sagt man aber nicht!`;
   return sendMessage(message, update.message.chat.id);
 }

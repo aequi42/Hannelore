@@ -64,6 +64,29 @@ async function handleMessage(payload: SendMessage) {
   return response;
 }
 
+export async function sendAnimation(
+  animationUrl: string,
+  chat_id: string | number,
+  caption?: string
+) {
+  const url = `https://api.telegram.org/bot${API_TOKEN}/sendAnimation`;
+  console.log(`sending Animation to ${url}`);
+  var response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      chat_id,
+      animation: animationUrl,
+      caption,
+      disable_notification: true
+    })
+  });
+  console.log(JSON.stringify(response, null, 2));
+  return response;
+}
+
 export async function sendPhoto(
   imageUrl: string,
   caption: string,
