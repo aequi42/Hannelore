@@ -1,5 +1,5 @@
 import { Update } from "../telegramTypes";
-import { sendAnimation } from "../utilities";
+import { sendAnimation, sendMessage, sendMarkupMessage } from "../utilities";
 import fetch from "node-fetch";
 
 const giphyApiKey = process.env.GIPHY_API_KEY;
@@ -32,7 +32,7 @@ type giphyResponse = {
     source_post_url: string;
     is_sticker: number;
     // some more unused
-    images: {
+    images?: {
       fixed_height: giphyImage;
     };
   };
@@ -53,11 +53,24 @@ async function handle(update: Update) {
   requests.delete(update.update_id);
   const encodedQuery = encodeURIComponent(query);
   const url = `https://api.giphy.com/v1/gifs/random?api_key=${giphyApiKey}&tag=${encodedQuery}&rating=R`;
-  const giphyResponse = await fetch(url);
-  const giphyResponseJson = (await giphyResponse.json()) as giphyResponse;
-
-  const imageUrl = giphyResponseJson.data.images.fixed_height.mp4;
-  return await sendAnimation(imageUrl, update.message.chat.id);
+  try {
+    const giphyResponse = await fetch(url);
+    const giphyResponseJson = (await giphyResponse.json()) as giphyResponse;
+    if (!giphyResponseJson.data.images) {
+      return await sendMessage(
+        `Es tut mir wirklich sehr leid ${update.message.from.first_name}, aber ich finde zu "${query}" leider nichts passendes`,
+        update.message.chat.id
+      );
+    }
+    const imageUrl = giphyResponseJson.data.images.fixed_height.mp4;
+    return await sendAnimation(imageUrl, update.message.chat.id);
+  } catch (error) {
+    return await sendMarkupMessage(
+      `Fehler von Giphy:
+<pre><code class="json">${JSON.stringify(error, null, 2)}</code></pre>`,
+      update.message.chat.id
+    );
+  }
 }
 
 export default {
