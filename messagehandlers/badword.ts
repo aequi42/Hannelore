@@ -1,5 +1,5 @@
 import { Update } from "../telegramTypes";
-import { sendMessage } from "../utilities";
+import { sendMessage, deleteMessage } from "../utilities";
 import { extract, partial_ratio } from "fuzzball";
 
 const words = [
@@ -34,7 +34,13 @@ function handle(update: Update) {
   const badword = foundBadwords.get(update.update_id);
   foundBadwords.delete(update.update_id);
   const message = `Nanana ${update.message.from.first_name}, ${badword} sagt man aber nicht!`;
-  return sendMessage(message, update.message.chat.id);
+
+  const deleteTheMessage = deleteMessage(
+    update.message.chat.id,
+    update.message.message_id
+  );
+  const sendResponse = sendMessage(message, update.message.chat.id);
+  return Promise.all([deleteTheMessage, sendResponse]);
 }
 
 export default {

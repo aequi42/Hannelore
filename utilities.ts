@@ -87,6 +87,29 @@ export async function sendAnimation(
   return response;
 }
 
+export async function deleteMessage(
+  chat_id: string | number,
+  message_id?: number
+) {
+  const url = `https://api.telegram.org/bot${API_TOKEN}/deleteMessage`;
+  console.log(`sending deleteMessage to ${url}`);
+  var body = {
+    chat_id,
+    message_id
+  };
+
+  var response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+  var json = await response.json();
+  console.log(JSON.stringify(json, null, 2));
+  return response;
+}
+
 export async function sendPhoto(
   imageUrl: string,
   caption: string,
