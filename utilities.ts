@@ -67,7 +67,8 @@ async function handleMessage(payload: SendMessage) {
 export async function sendAnimation(
   animationUrl: string,
   chat_id: string | number,
-  caption?: string
+  caption?: string,
+  captionIsHtml = false
 ) {
   const url = `https://api.telegram.org/bot${API_TOKEN}/sendAnimation`;
   console.log(`sending Animation to ${url}`);
@@ -80,7 +81,8 @@ export async function sendAnimation(
       chat_id,
       animation: animationUrl,
       caption,
-      disable_notification: true
+      disable_notification: true,
+      parse_mode: captionIsHtml ? "HTML" : undefined
     })
   });
   console.log(JSON.stringify(response, null, 2));
