@@ -23,7 +23,7 @@ export default async (req: request, res) => {
   try {
     await matchingHandler.handle(body);
   } catch (error) {
-    sendMarkupMessage(
+    await sendMarkupMessage(
       `Fehler in Handler ${matchingHandler.name}:
 <pre><code class="json">${JSON.stringify(error, null, 2)}</code></pre>`,
       body.message.chat.id

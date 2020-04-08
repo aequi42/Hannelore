@@ -11,7 +11,7 @@ type SendMessage = {
   reply_markup?: never; //TODO
 };
 
-export async function sendMarkupMessage(
+export function sendMarkupMessage(
   message: string,
   chat_id: string | number,
   reply_id?: number
@@ -25,7 +25,7 @@ export async function sendMarkupMessage(
   });
 }
 
-export async function sendMarkdownMessage(
+export function sendMarkdownMessage(
   message: string,
   chat_id: string | number,
   reply_id?: number
@@ -38,7 +38,7 @@ export async function sendMarkdownMessage(
   });
 }
 
-export async function sendMessage(
+export function sendMessage(
   message: string,
   chat_id: string | number,
   reply_id?: number
