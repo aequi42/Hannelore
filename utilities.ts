@@ -166,3 +166,19 @@ export async function sendChatAction(
   console.log(JSON.stringify(response, null, 2));
   return response;
 }
+
+export async function sendDice(chat_id: string | number) {
+  const url = `https://api.telegram.org/bot${API_TOKEN}/sendDice`;
+  console.log(`sendDice to ${url}`);
+  var response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      chat_id,
+    })
+  });
+  console.log(JSON.stringify(response, null, 2));
+  return response;
+}

@@ -4,13 +4,15 @@ import echoHandler from "./echo";
 import badword from "./badword";
 import weisheit from "./weisheit";
 import gifs from "./gifs";
+import dice from "./dice";
 
 const AllHandlers: Handler[] = [
   weisheit,
   chuckHandler,
   echoHandler,
   badword,
-  gifs
+  gifs, 
+  dice
 ];
 
 export function addHandler(handler: Handler) {
