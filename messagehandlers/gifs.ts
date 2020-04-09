@@ -42,14 +42,14 @@ const requests = new Map<number, RegExpExecArray>();
 
 function canHandle(update: Update) {
   if (!update.message || !update.message.text) return false;
-  const match = /^\/gif (.+)$/gi.exec(update.message.text);
+  const match = /^\/gif( ?(.+))?$/gi.exec(update.message.text);
   if (!match) return false;
   requests.set(update.update_id, match);
   return true;
 }
 
 async function handle(update: Update) {
-  const query = requests.get(update.update_id)[1];
+  const query = requests.get(update.update_id)[1] || "random";
   requests.delete(update.update_id);
   const encodedQuery = encodeURIComponent(query);
   const url = `https://api.giphy.com/v1/gifs/random?api_key=${giphyApiKey}&tag=${encodedQuery}&rating=R`;
