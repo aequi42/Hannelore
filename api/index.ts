@@ -1,6 +1,6 @@
 import { Update, Message } from "../telegramTypes";
 import { getAllHandler } from "../messagehandlers";
-import { sendMarkupMessage } from "../utilities";
+import { sendMarkupMessage, sendChatAction } from "../utilities";
 
 type request = {
   body: Update;
@@ -21,6 +21,8 @@ export default async (req: request, res) => {
   }
   console.log(`[BOT] matching handler: ${matchingHandler.name}`);
   try {
+    matchingHandler.actionType &&
+      (await sendChatAction(matchingHandler.actionType, body.message.chat.id));
     await matchingHandler.handle(body);
   } catch (error) {
     await sendMarkupMessage(

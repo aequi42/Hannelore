@@ -1,6 +1,7 @@
 import { Update } from "../telegramTypes";
 import { sendAnimation, sendMessage, sendMarkupMessage } from "../utilities";
 import fetch from "node-fetch";
+import { Handler } from "./handler";
 
 const giphyApiKey = process.env.GIPHY_API_KEY;
 type giphyImage = {
@@ -75,6 +76,7 @@ async function handle(update: Update) {
 
 export default {
   name: "randomGif",
+  actionType: "upload_video",
   canHandle,
   handle
-};
+} as Handler;

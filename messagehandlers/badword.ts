@@ -1,11 +1,15 @@
 import { Update } from "../telegramTypes";
 import { deleteMessage, sendAnimation } from "../utilities";
 import { extract } from "fuzzball";
+import { Handler } from "./handler";
 
 const badWordsWithReplacement: [string, string][] = [
   ["Arsch", "Sitzorgan"],
   ["orsch", "Sitzorgan"],
   ["Fotze", "Vulva"],
+  ["Hure", "Dirne"],
+  ["verfickte","verflixte"],
+  ["Schlampe","Frau mit wechselnden Geschlechtspartnern"],
   ["Hurensohn", "Nachkomme einer Dirne"],
   ["Blödmann", "Typ mit geringem IQ"],
   ["Wichser", "Selbsbefriediger"],
@@ -76,6 +80,7 @@ function handle(update: Update) {
 
 export default {
   name: "badword",
+  actionType: "typing",
   canHandle,
   handle
-};
+} as Handler;

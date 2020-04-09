@@ -134,3 +134,35 @@ export async function sendPhoto(
   console.log(JSON.stringify(response, null, 2));
   return response;
 }
+
+export type ChatActions =
+  | "typing"
+  | "upload_photo"
+  | "record_video"
+  | "upload_video"
+  | "record_audio"
+  | "upload_audio"
+  | "upload_document"
+  | "find_location"
+  | "record_video_note"
+  | "upload_video_note";
+
+export async function sendChatAction(
+  action: ChatActions,
+  chat_id: string | number
+) {
+  const url = `https://api.telegram.org/bot${API_TOKEN}/sendChatAction`;
+  console.log(`sendChatAction to ${url}`);
+  var response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      chat_id,
+      action
+    })
+  });
+  console.log(JSON.stringify(response, null, 2));
+  return response;
+}

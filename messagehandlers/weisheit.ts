@@ -1,5 +1,6 @@
 import { Update } from "../telegramTypes";
 import { sendMessage, sendMarkupMessage } from "../utilities";
+import { Handler } from "./handler";
 
 function canHandle(update: Update) {
   if (!update.message || !update.message.text) return false;
@@ -16,9 +17,10 @@ function handle(update: Update) {
 
 export default {
   name: "echo",
+  actionType: "typing",
   canHandle,
   handle
-};
+} as Handler;
 
 const weisheiten = [
   ["Da hättest du nicht sagen können, a besserer Keyboarder, nein, da sagst du Programmierer. Du bist a Flasche vorm Herrn", "Rosi <3"],
