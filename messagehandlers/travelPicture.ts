@@ -19,7 +19,7 @@ type getDirectoryContentsResult = {
 
 function canHandle(update: Update) {
   if (!update.message || !update.message.text) return false;
-  return update.message.text.indexOf("/travelPicture") == 0;
+  return update.message.text.indexOf("/travelpicture") == 0;
 }
 
 async function handle(update: Update) {

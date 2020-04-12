@@ -1,10 +1,7 @@
 const fetch = require("node-fetch");
 const log = console.log.bind(null, "[PostBuild]");
 const API_TOKEN = process.env.BOT_TOKEN;
-if (process.env.NODE_ENV !== "production") {
-  log("skipping build, no prod");
-  return;
-}
+
 async function registerCommands() {
   const availableCommands = [
     { command: "lebensweisheit", description: "Gibt eine Lebensweisheit aus" },
@@ -17,7 +14,7 @@ async function registerCommands() {
       description: "Ein Würfel mit einer zufälligen Zahl zwischen 1 und 6"
     },
     {
-      command: "travelPicture",
+      command: "travelpicture",
       description: "Sendet ein Bild von einer unserer Reisen."
     }
   ];
