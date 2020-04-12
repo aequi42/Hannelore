@@ -31,15 +31,17 @@ async function handle(update: Update) {
     `/files/${nextcloudUser}/Unternehmungen`,
     {
       deep: true,
-      glob: "*.jpg"
+      glob: "**/verkleinert/*.jpg"
     }
   );
+  log(directoryItems)
   const correctSize = directoryItems.filter(i => i.size < 10000000);
   const count = correctSize.length;
   const randomIdx = Math.floor(Math.random() * (count + 1));
   const image = correctSize[randomIdx];
   const { filename } = image;
   const contentBuffer = await client.getFileContents(filename);
+  log(contentBuffer)
   return await sendPhoto(
     contentBuffer,
     image.filename.replace(`/files/${nextcloudUser}/`, ""),
