@@ -1,3 +1,4 @@
+import { performance } from "perf_hooks";
 import { Update, Message } from "telegram-typings";
 import { NowRequest, NowResponse } from "@now/node";
 import { getAllHandler } from "../messagehandlers";
@@ -15,6 +16,7 @@ const log = console.log.bind(null, "[BOT WEBHOOK]");
 
 export default async (req: Request, res: NowResponse) => {
   const { body } = req;
+  const startTime = performance.now()
   log("Incoming Request!", JSON.stringify(body, null, 2));
 
   const handlers = getAllHandler();
@@ -41,9 +43,10 @@ export default async (req: Request, res: NowResponse) => {
   } catch (error) {
     await sendMarkupMessage(
       `Fehler in Handler ${matchingHandler.name}:
-<pre><code class="json">${JSON.stringify(error, null, 2)}</code></pre>`,
+<pre><code class="js">${JSON.stringify(error, null, 2)}</code></pre>`,
       body.message.chat.id
     );
   }
+  log(`finished! Time elapsed: ${performance.now() - startTime}ms`);
   res.end();
 };

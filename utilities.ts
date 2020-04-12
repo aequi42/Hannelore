@@ -1,4 +1,6 @@
-import fetch from "node-fetch";
+import fetch, { Blob } from "node-fetch";
+import NodeFormData from "form-data";
+import { promises } from "fs";
 const API_TOKEN = process.env.BOT_TOKEN;
 const log = console.log.bind(null, "[TELEGRAM API]");
 
@@ -91,14 +93,40 @@ export async function deleteMessage(
 }
 
 export async function sendPhoto(
-  imageUrl: string,
+  image: string | ArrayBuffer,
   caption: string,
   chat_id: string | number
 ) {
-  return makeRequest({
-    method: "sendPhoto",
-    payload: { chat_id, photo: imageUrl, caption, disable_notification: true }
-  });
+  if (typeof image === "string")
+    return makeRequest({
+      method: "sendPhoto",
+      payload: { chat_id, photo: image, caption, disable_notification: true }
+    });
+  try {
+    const formData = new NodeFormData();
+    formData.append("chat_id", chat_id, { contentType: "text/plain" });
+    formData.append("photo", image, {
+      contentType: "image/jpeg",
+      filename: "caption" //Das ist wichtig -.-
+    });
+    if (caption) {
+      formData.append("caption", caption);
+    }
+
+    var result = await fetch(
+      `https://api.telegram.org/bot${API_TOKEN}/sendPhoto`,
+      {
+        method: "POST",
+        body: formData
+      }
+    );
+    var json = await result.json();
+    log(JSON.stringify(json, null, 2));
+    return result;
+  } catch (e) {
+    console.error(e);
+    return Promise.reject(e);
+  }
 }
 
 export type ChatActions =
