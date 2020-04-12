@@ -1,4 +1,4 @@
-import { Update } from "../telegramTypes";
+import { Update } from "telegram-typings";
 import { sendMessage, sendMarkupMessage } from "../utilities";
 import { Handler } from "./handler";
 
@@ -16,7 +16,7 @@ function handle(update: Update) {
 }
 
 export default {
-  name: "echo",
+  name: "weisheit",
   actionType: "typing",
   canHandle,
   handle

@@ -1,4 +1,4 @@
-import { Update } from "../telegramTypes";
+import { Update } from "telegram-typings";
 import { deleteMessage, sendAnimation } from "../utilities";
 import { extract } from "fuzzball";
 import { Handler } from "./handler";
@@ -8,8 +8,8 @@ const badWordsWithReplacement: [string, string][] = [
   ["orsch", "Sitzorgan"],
   ["Fotze", "Vulva"],
   ["Hure", "Dirne"],
-  ["verfickte","verflixte"],
-  ["Schlampe","Frau mit wechselnden Geschlechtspartnern"],
+  ["verfickte", "verflixte"],
+  ["Schlampe", "Frau mit wechselnden Geschlechtspartnern"],
   ["Hurensohn", "Nachkomme einer Dirne"],
   ["Blödmann", "Typ mit geringem IQ"],
   ["Wichser", "Selbsbefriediger"],

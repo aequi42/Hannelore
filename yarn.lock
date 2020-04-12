@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@now/node@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@now/node/-/node-1.5.0.tgz#a159772276ae11acf87cf2620a86204abff38f1c"
+  integrity sha512-0MChNIBHsViTMPDsifTveWmMpUSUbVQYAHg9Qa8p7uF7pkfBAghyCGHSKHJVg3zxx0vVE4z+rYgaRS6xvF8qMA==
+  dependencies:
+    "@types/node" "*"
+
 "@types/node-fetch@^2.5.5":
   version "2.5.5"
   resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.5.5.tgz#cd264e20a81f4600a6c52864d38e7fef72485e92"
@@ -92,3 +99,8 @@ string.prototype.codepointat@^0.2.0:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/string.prototype.codepointat/-/string.prototype.codepointat-0.2.1.tgz#004ad44c8afc727527b108cd462b4d971cd469bc"
   integrity sha512-2cBVCj6I4IOvEnjgO/hWqXjqBGsY+zwPmHl12Srk9IXSZ56Jwwmy+66XO5Iut/oQVR7t5ihYdLB0GMa4alEUcg==
+
+telegram-typings@^4.0.0-beta:
+  version "4.0.0-beta"
+  resolved "https://registry.yarnpkg.com/telegram-typings/-/telegram-typings-4.0.0-beta.tgz#802e2f6f58af1c33bbc12c3fe8702e9e07d4d9bc"
+  integrity sha512-p5rH6xmotS4wvzQr3z0EyyMNGOceaZ1poUienbRFPUHTHQv4W+n40vORRwuc1myZ41E633l2UGdXl2V9hjX7Dw==

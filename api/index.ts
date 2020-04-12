@@ -1,25 +1,39 @@
-import { Update, Message } from "../telegramTypes";
+import { Update, Message } from "telegram-typings";
+import { NowRequest, NowResponse } from "@now/node";
 import { getAllHandler } from "../messagehandlers";
 import { sendMarkupMessage, sendChatAction } from "../utilities";
+import { Modify } from "../vendor";
 
-type request = {
-  body: Update;
-};
+type Request = Modify<
+  NowRequest,
+  {
+    body: Update;
+  }
+>;
 
-export default async (req: request, res) => {
-  console.log("[BOT] Incoming Request!");
+const log = console.log.bind(null, "[BOT WEBHOOK]");
+
+export default async (req: Request, res: NowResponse) => {
   const { body } = req;
-  console.log(JSON.stringify(body, null, 2));
+  log("Incoming Request!", JSON.stringify(body, null, 2));
+
   const handlers = getAllHandler();
-  console.log(`all ${handlers.length} handlers`);
+
+  log(
+    `Registered ${handlers.length} handlers: ${handlers
+      .map(h => h.name)
+      .join(",")}`
+  );
 
   const matchingHandler = handlers.find(h => h.canHandle(body));
+
   if (!matchingHandler) {
-    console.log(`[BOT] no matching handler found!`);
+    log(`no matching handler found!`);
     res.end();
     return;
   }
-  console.log(`[BOT] matching handler: ${matchingHandler.name}`);
+
+  log(`matching handler: ${matchingHandler.name}`);
   try {
     matchingHandler.actionType &&
       (await sendChatAction(matchingHandler.actionType, body.message.chat.id));

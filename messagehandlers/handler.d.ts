@@ -1,4 +1,4 @@
-import { Update } from "../telegramTypes";
+import { Update } from "telegram-typings";
 import { Response } from "node-fetch";
 import { ChatActions } from "../utilities";
 

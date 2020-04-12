@@ -1,15 +1,14 @@
-import { Update } from "../telegramTypes";
+import { Update } from "telegram-typings";
 import { sendDice } from "../utilities";
 import { Handler } from "./handler";
 
-
 function canHandle(update: Update) {
   if (!update.message || !update.message.text) return false;
-  return /\/wuerfel/gi.test(update.message.text);
+  return update.message.text.indexOf("/wuerfel") == 0;
 }
 
 async function handle(update: Update) {
-  return await sendDice(update.message.chat.id)
+  return await sendDice(update.message.chat.id);
 }
 
 export default {

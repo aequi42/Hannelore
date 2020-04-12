@@ -1,4 +1,4 @@
-import { Update } from "../telegramTypes";
+import { Update } from "telegram-typings";
 import { sendMessage, sendMarkdownMessage } from "../utilities";
 import fetch from "node-fetch";
 import { Handler } from "./handler";
@@ -23,7 +23,6 @@ async function handle(update: Update) {
     "https://api.chucknorris.io/jokes/random"
   );
   const chuckFactJson = (await chuckFactApiResponse.json()) as chuckNorrisJson;
-  console.log("chuck norris fact:", chuckFactJson.value);
   const markdown = `${chuckFactJson.value}`;
   return await sendMarkdownMessage(
     markdown,
