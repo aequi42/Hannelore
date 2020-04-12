@@ -1,6 +1,11 @@
 {
   "env": {
-    "BOT_TOKEN":"@bot-token",
-    "GIPHY_API_KEY":"@giphy-api-key"
+    "BOT_TOKEN": "@bot-token",
+    "GIPHY_API_KEY": "@giphy-api-key"
+  },
+  "build": {
+    "env": {
+      "BOT_TOKEN": "@bot-token"
+    }
   }
 }

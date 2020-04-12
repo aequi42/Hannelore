@@ -5,7 +5,7 @@ import { Handler } from "./handler";
 
 function canHandle(update: Update) {
   if (!update.message || !update.message.text) return false;
-  return /\/würfel/gi.test(update.message.text);
+  return /\/wuerfel/gi.test(update.message.text);
 }
 
 async function handle(update: Update) {
