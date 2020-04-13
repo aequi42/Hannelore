@@ -95,7 +95,7 @@ export async function deleteMessage(
 export async function sendPhoto(
   image: string | ArrayBuffer,
   chat_id: string | number,
-  caption?: string,
+  caption?: string
 ) {
   if (typeof image === "string")
     return makeRequest({
@@ -154,6 +154,22 @@ export async function sendChatAction(
 export async function sendDice(chat_id: string | number) {
   return makeRequest({ method: "sendDice", payload: { chat_id } });
 }
+
+type InlineKeyboardButton = {
+  text: string;
+  url?: string;
+  login_url?: {};
+  callback_data?: string;
+  switch_inline_query?: string;
+  switch_inline_query_current_chat?: string;
+  callback_game?: {};
+  pay?: boolean;
+};
+
+type InlineKeyboardMarkup = {
+  inline_keyboard: InlineKeyboardButton[][];
+};
+
 type chatId = { chat_id: string | number };
 type parseMode = { parse_mode?: "HTML" | "Markdown" };
 type sendDiceParameters = chatId;

@@ -3,6 +3,12 @@ type Wisdom {
   author: String!
 }
 
+type RegisteredChat {
+  chatId: Int
+  description: String
+}
+
 type Query {
   allWisdoms: [Wisdom!]!
+  allRegisteredChats: [RegisteredChat!]!
 }

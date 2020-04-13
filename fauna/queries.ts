@@ -1,7 +1,7 @@
 import ApolloClient from "apollo-boost";
 import gql from "graphql-tag";
 import fetch from "cross-fetch";
-import { Wisdom } from "./types";
+import { Wisdom, RegisteredChat } from "./types";
 
 const faunaSecret = process.env.FAUNA_KEY;
 
@@ -26,7 +26,22 @@ export async function GetAllWisdoms() {
       }
     `
   });
-  console.log(queryResult);
-  console.log(queryResult.data.allWisdoms);
   return queryResult.data.allWisdoms.data;
+}
+export async function GetAllRegisteredChats() {
+  const queryResult = await client.query<{
+    allRegisteredChats: { data: RegisteredChat[] };
+  }>({
+    query: gql`
+      query chats {
+        allRegisteredChats {
+          data {
+            chatId
+            description
+          }
+        }
+      }
+    `
+  });
+  return queryResult.data.allRegisteredChats.data;
 }

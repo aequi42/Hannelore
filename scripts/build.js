@@ -1,6 +1,8 @@
 const fetch = require("node-fetch");
 const log = console.log.bind(null, "[PostBuild]");
+const fs = require("fs").promises;
 const API_TOKEN = process.env.BOT_TOKEN;
+const FAUNA_KEY = process.env.FAUNA_KEY;
 
 async function registerCommands() {
   const availableCommands = [
@@ -18,17 +20,13 @@ async function registerCommands() {
       description: "Sendet ein Bild von einer unserer Reisen."
     }
   ];
-  log(`Registering Commands`, JSON.stringify(availableCommands, null, 2));
+  log(`{registerCommands}`, JSON.stringify(availableCommands, null, 2));
   return await setMyCommands(availableCommands);
 }
 
-(async () => {
-  await registerCommands();
-})();
-
 async function setMyCommands(commands) {
   const url = `https://api.telegram.org/bot${API_TOKEN}/setMyCommands`;
-  console.log(`setMyCommands to ${url}`);
+  log(`{registerCommands} ${url}`);
   var response = await fetch(url, {
     method: "POST",
     headers: {
@@ -39,6 +37,27 @@ async function setMyCommands(commands) {
     })
   });
   let json = await response.json();
-  console.log(JSON.stringify(json, null, 2));
+  log("{registerCommands}", JSON.stringify(json, null, 2));
   return response;
 }
+
+async function setGraphQLinFauna() {
+  const schema = await fs.readFile("./fauna/schema.gql", "utf-8");
+  const faunaResponse = await fetch(
+    `https://graphql.fauna.com/import?mode=merge`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${FAUNA_KEY}`
+      },
+      body: schema
+    }
+  );
+  const result = await faunaResponse.text();
+  log("{setGraphQLinFauna}", result);
+}
+
+(async () => {
+  await registerCommands();
+  await setGraphQLinFauna();
+})();

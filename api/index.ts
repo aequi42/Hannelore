@@ -4,6 +4,7 @@ import { NowRequest, NowResponse } from "@now/node";
 import { getAllHandler } from "../messagehandlers";
 import { sendMarkupMessage, sendChatAction } from "../telegramApi";
 import { Modify } from "../vendor";
+import { GetAllRegisteredChats } from "../fauna/queries";
 
 type Request = Modify<
   NowRequest,
@@ -13,12 +14,21 @@ type Request = Modify<
 >;
 
 const log = console.log.bind(null, "[BOT WEBHOOK]");
+async function chatAllowed(id: number) {
+  var allChats = await GetAllRegisteredChats();
+  return allChats.some(cht => cht.chatId == id);
+}
 
 export default async (req: Request, res: NowResponse) => {
   const { body } = req;
-  const startTime = performance.now()
+  const startTime = performance.now();
   log("Incoming Request!", JSON.stringify(body, null, 2));
-
+  if (!(await chatAllowed(body.message.chat.id))) {
+    log(`chat not in the allowed list (${body.message.chat.id}). abort further execution`);
+    log(`finished! Time elapsed: ${performance.now() - startTime}ms`);
+    res.end();
+    return;
+  }
   const handlers = getAllHandler();
 
   log(
