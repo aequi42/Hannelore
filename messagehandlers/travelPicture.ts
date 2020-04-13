@@ -1,7 +1,7 @@
 import { Handler } from "./handler";
 import { Update } from "telegram-typings";
 import { createClient } from "webdav";
-import { sendPhoto } from "../utilities";
+import { sendPhoto } from "../telegramApi";
 
 const nextcloudUrl = process.env.NEXTCLOUD_URL;
 const nextcloudUser = process.env.NEXTCLOUD_USER;

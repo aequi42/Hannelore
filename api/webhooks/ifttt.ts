@@ -1,5 +1,5 @@
 import { NowRequest, NowResponse } from "@now/node";
-import { sendMarkupMessage, sendPhoto } from "../../utilities";
+import { sendMarkupMessage, sendPhoto } from "../../telegramApi";
 import { Modify } from "../../vendor";
 const GROUPCHAT_ID = process.env.GROUPCHAT_ID || -271216047;
 

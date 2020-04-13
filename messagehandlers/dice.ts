@@ -1,5 +1,5 @@
 import { Update } from "telegram-typings";
-import { sendDice } from "../utilities";
+import { sendDice } from "../telegramApi";
 import { Handler } from "./handler";
 
 function canHandle(update: Update) {

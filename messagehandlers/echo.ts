@@ -1,5 +1,5 @@
 import { Update } from "telegram-typings";
-import { sendMessage } from "../utilities";
+import { sendMessage } from "../telegramApi";
 
 
 function canHandle(update: Update) {

@@ -1,0 +1,8 @@
+type Wisdom {
+  text: String!
+  author: String!
+}
+
+type Query {
+  allWisdoms: [Wisdom!]!
+}

@@ -2,7 +2,7 @@ import { performance } from "perf_hooks";
 import { Update, Message } from "telegram-typings";
 import { NowRequest, NowResponse } from "@now/node";
 import { getAllHandler } from "../messagehandlers";
-import { sendMarkupMessage, sendChatAction } from "../utilities";
+import { sendMarkupMessage, sendChatAction } from "../telegramApi";
 import { Modify } from "../vendor";
 
 type Request = Modify<

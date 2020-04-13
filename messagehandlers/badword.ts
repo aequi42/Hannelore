@@ -1,5 +1,5 @@
 import { Update } from "telegram-typings";
-import { deleteMessage, sendAnimation } from "../utilities";
+import { deleteMessage, sendAnimation } from "../telegramApi";
 import { extract } from "fuzzball";
 import { Handler } from "./handler";
 

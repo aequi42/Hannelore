@@ -1,5 +1,5 @@
 import { Update } from "telegram-typings";
-import { sendAnimation, sendMessage, sendMarkupMessage } from "../utilities";
+import { sendAnimation, sendMessage, sendMarkupMessage } from "../telegramApi";
 import fetch from "node-fetch";
 import { Handler } from "./handler";
 
