@@ -2,13 +2,15 @@
   "env": {
     "BOT_TOKEN": "@bot-token",
     "GIPHY_API_KEY": "@giphy-api-key",
+    "FAUNA_KEY": "@fauna-key",
     "NEXTCLOUD_URL":"@nextcloud-url",
     "NEXTCLOUD_USER":"@nextcloud-user",
     "NEXTCLOUD_PASSWORD":"@nextcloud-password"
   },
   "build": {
     "env": {
-      "BOT_TOKEN": "@bot-token"
+      "BOT_TOKEN": "@bot-token",
+      "FAUNA_KEY": "@fauna-key"
     }
   }
 }
