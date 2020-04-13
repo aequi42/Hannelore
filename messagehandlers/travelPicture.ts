@@ -44,8 +44,8 @@ async function handle(update: Update) {
   log(contentBuffer)
   return await sendPhoto(
     contentBuffer,
-    image.filename.replace(`/files/${nextcloudUser}/`, ""),
     update.message.chat.id
+    // image.filename.replace(`/files/${nextcloudUser}/`, ""),
   );
 }
 

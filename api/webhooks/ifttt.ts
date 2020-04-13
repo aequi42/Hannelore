@@ -19,7 +19,7 @@ export default async (req: Request, res: NowResponse) => {
   const { body } = req;
   console.log(JSON.stringify(body, null, 2));
   if (body.img) {
-    await sendPhoto(body.img, body.message, body.chatId || GROUPCHAT_ID);
+    await sendPhoto(body.img, body.chatId || GROUPCHAT_ID, body.message);
   } else {
     await sendMarkupMessage(body.message, body.chatId || GROUPCHAT_ID);
   }

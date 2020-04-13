@@ -17,10 +17,6 @@ const AllHandlers: Handler[] = [
   travelPicture
 ];
 
-export function addHandler(handler: Handler) {
-  AllHandlers.push(handler);
-}
-
 export function getAllHandler() {
   return AllHandlers;
 }

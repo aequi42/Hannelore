@@ -94,8 +94,8 @@ export async function deleteMessage(
 
 export async function sendPhoto(
   image: string | ArrayBuffer,
-  caption: string,
-  chat_id: string | number
+  chat_id: string | number,
+  caption?: string,
 ) {
   if (typeof image === "string")
     return makeRequest({
