@@ -16,15 +16,23 @@ type Request = Modify<
 const log = console.log.bind(null, "[BOT WEBHOOK]");
 async function chatAllowed(id: number) {
   var allChats = await GetAllRegisteredChats();
-  return allChats.some(cht => cht.chatId == id);
+  return allChats.some((cht) => cht.chatId == id);
 }
 
 export default async (req: Request, res: NowResponse) => {
   const { body } = req;
   const startTime = performance.now();
+  if (!body.message) {
+    //for example edited
+    log(`finished, nothing to do`);
+    res.end();
+    return;
+  }
   log("Incoming Request!", JSON.stringify(body, null, 2));
   if (!(await chatAllowed(body.message.chat.id))) {
-    log(`chat not in the allowed list (${body.message.chat.id}). abort further execution`);
+    log(
+      `chat not in the allowed list (${body.message.chat.id}). abort further execution`
+    );
     log(`finished! Time elapsed: ${performance.now() - startTime}ms`);
     res.end();
     return;
@@ -33,11 +41,11 @@ export default async (req: Request, res: NowResponse) => {
 
   log(
     `Registered ${handlers.length} handlers: ${handlers
-      .map(h => h.name)
+      .map((h) => h.name)
       .join(",")}`
   );
 
-  const matchingHandler = handlers.find(h => h.canHandle(body));
+  const matchingHandler = handlers.find((h) => h.canHandle(body));
 
   if (!matchingHandler) {
     log(`no matching handler found!`);
