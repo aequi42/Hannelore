@@ -59,5 +59,5 @@ async function setGraphQLinFauna() {
 
 (async () => {
   await registerCommands();
-  await setGraphQLinFauna();
+  // await setGraphQLinFauna();
 })();
