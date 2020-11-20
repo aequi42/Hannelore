@@ -15,7 +15,7 @@ type giphyImage = {
   webp_size: string;
 };
 
-type giphyResponse = {
+type giphyRandomResponse = {
   data: {
     type: string;
     id: string;
@@ -39,6 +39,15 @@ type giphyResponse = {
   };
 };
 
+type giphySearchResponse = {
+  data: Array<giphyRandomResponse["data"]>;
+  pagination: {
+    total_count: number;
+    count: number;
+    offset: number;
+  };
+};
+
 function canHandle(update: Update) {
   if (!update.message || !update.message.text) return false;
   return update.message.text.indexOf("/gif") == 0;
@@ -48,17 +57,18 @@ async function handle(update: Update) {
   const match = /^\/gif( ?(.+))?$/gi.exec(update.message.text);
   const query = match[1] || "random";
   const encodedQuery = encodeURIComponent(query);
-  const url = `https://api.giphy.com/v1/gifs/random?api_key=${giphyApiKey}&tag=${encodedQuery}&rating=R`;
+  const url = `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${encodedQuery}&rating=R`;
   try {
     const giphyResponse = await fetch(url);
-    const giphyResponseJson = (await giphyResponse.json()) as giphyResponse;
-    if (!giphyResponseJson.data.images) {
+    const giphyResponseJson = (await giphyResponse.json()) as giphySearchResponse;
+    if (!giphyResponseJson.pagination.count) {
       return await sendMessage(
         `Es tut mir wirklich sehr leid ${update.message.from.first_name}, aber ich finde zu "${query}" leider nichts passendes`,
         update.message.chat.id
       );
     }
-    const imageUrl = giphyResponseJson.data.images.fixed_height.mp4;
+    const image = getRandomImage(giphyResponseJson)
+    const imageUrl = image.images.fixed_height.mp4;
     return await sendAnimation(imageUrl, update.message.chat.id);
   } catch (error) {
     return await sendMarkupMessage(
@@ -69,9 +79,18 @@ async function handle(update: Update) {
   }
 }
 
+function getRandomImage(response: giphySearchResponse){
+  const idx = randomIntFromInterval(0, response.pagination.count -1)
+  return response.data[idx];
+}
+
+
+function randomIntFromInterval(min:number, max:number) { // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
 export default {
   name: "randomGif",
   actionType: "upload_video",
   canHandle,
-  handle
+  handle,
 } as Handler;
