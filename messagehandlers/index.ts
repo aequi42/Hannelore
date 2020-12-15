@@ -8,7 +8,7 @@ import dice from "./dice";
 import travelPicture from "./travelPicture";
 
 const AllHandlers: Handler[] = [
-  badword,
+  // badword,
   weisheit,
   chuckHandler,
   echoHandler,
