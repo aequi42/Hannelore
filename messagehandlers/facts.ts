@@ -1,5 +1,10 @@
 import { Update } from "telegram-typings";
-import { sendAnimation, sendMessage, sendMarkupMessage } from "../telegramApi";
+import {
+  sendAnimation,
+  sendMessage,
+  sendMarkupMessage,
+  sendMarkdownMessageWithKeyboard,
+} from "../telegramApi";
 import fetch from "node-fetch";
 import { Handler } from "./handler";
 
@@ -23,7 +28,13 @@ async function handle(update: Update) {
     const factResponse = await fetch(url);
     const factResponseJson = (await factResponse.json()) as factApiResponse;
     const fact = factResponseJson.text;
-    return await sendMarkupMessage(fact, update.message.chat.id);
+    const source = factResponseJson.source_url;
+    const keyboard = [[{ text: "Wo hast du das her?", url: source }]];
+    return await sendMarkdownMessageWithKeyboard(
+      fact,
+      update.message.chat.id,
+      keyboard
+    );
   } catch (error) {
     return await sendMarkupMessage(
       `Fehler beim Faktencheck:

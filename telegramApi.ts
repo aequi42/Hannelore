@@ -24,11 +24,11 @@ export function sendMarkupMessage(
     chat_id,
     reply_to_message_id: reply_id,
     disable_notification: true,
-    ...({ parse_mode: "HTML" } as parseMode)
+    ...({ parse_mode: "HTML" } as parseMode),
   };
   return makeRequest({
     method: "sendMessage",
-    payload
+    payload,
   });
 }
 
@@ -41,7 +41,24 @@ export function sendMarkdownMessage(
     text: message,
     chat_id,
     reply_to_message_id: reply_id,
-    ...({ parse_mode: "Markdown" } as parseMode)
+    ...({ parse_mode: "Markdown" } as parseMode),
+  };
+
+  return makeRequest({ method: "sendMessage", payload });
+}
+
+export function sendMarkdownMessageWithKeyboard(
+  message: string,
+  chat_id: string | number,
+  inline_keyboard: InlineKeyboardMarkup["inline_keyboard"],
+  reply_id?: number
+) {
+  const payload = {
+    text: message,
+    chat_id,
+    reply_to_message_id: reply_id,
+    reply_markup: { inline_keyboard },
+    ...({ parse_mode: "Markdown" } as parseMode),
   };
 
   return makeRequest({ method: "sendMessage", payload });
@@ -55,11 +72,11 @@ export function sendMessage(
   const payload = {
     text: message,
     chat_id,
-    reply_to_message_id: reply_id
+    reply_to_message_id: reply_id,
   };
   return makeRequest({
     method: "sendMessage",
-    payload
+    payload,
   });
 }
 
@@ -74,7 +91,7 @@ export async function sendAnimation(
     animation: animationUrl,
     caption,
     disable_notification: true,
-    ...(captionIsHtml && ({ parse_mode: "HTML" } as parseMode))
+    ...(captionIsHtml && ({ parse_mode: "HTML" } as parseMode)),
   };
 
   return makeRequest({ method: "sendAnimation", payload });
@@ -86,7 +103,7 @@ export async function deleteMessage(
 ) {
   const payload = {
     chat_id,
-    message_id
+    message_id,
   };
 
   return makeRequest({ method: "deleteMessage", payload });
@@ -100,14 +117,14 @@ export async function sendPhoto(
   if (typeof image === "string")
     return makeRequest({
       method: "sendPhoto",
-      payload: { chat_id, photo: image, caption, disable_notification: true }
+      payload: { chat_id, photo: image, caption, disable_notification: true },
     });
   try {
     const formData = new NodeFormData();
     formData.append("chat_id", chat_id, { contentType: "text/plain" });
     formData.append("photo", image, {
       contentType: "image/jpeg",
-      filename: "caption" //Das ist wichtig -.-
+      filename: "caption", //Das ist wichtig -.-
     });
     if (caption) {
       formData.append("caption", caption);
@@ -117,7 +134,7 @@ export async function sendPhoto(
       `https://api.telegram.org/bot${API_TOKEN}/sendPhoto`,
       {
         method: "POST",
-        body: formData
+        body: formData,
       }
     );
     var json = await result.json();
@@ -147,7 +164,7 @@ export async function sendChatAction(
 ) {
   return makeRequest({
     method: "sendChatAction",
-    payload: { chat_id, action }
+    payload: { chat_id, action },
   });
 }
 
@@ -192,7 +209,7 @@ type sendMessageParameters = chatId &
     disable_web_page_preview?: boolean;
     disable_notification?: boolean;
     reply_to_message_id?: number;
-    reply_markup?: never;
+    reply_markup?: InlineKeyboardMarkup;
   };
 type requestParams =
   | { method: "sendDice"; payload: sendDiceParameters }
@@ -208,9 +225,9 @@ async function makeRequest({ method, payload }: requestParams) {
   var response = await fetch(url, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   });
   const json = await response.json();
   log(JSON.stringify(json, null, 2));
