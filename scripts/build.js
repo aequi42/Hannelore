@@ -18,6 +18,10 @@ async function registerCommands() {
     {
       command: "travelpicture",
       description: "Sendet ein Bild von einer unserer Reisen."
+    },
+    {
+      command: "fact",
+      description: "Gibt lebenswichtige Fakten zurück."
     }
   ];
   log(`{registerCommands}`, JSON.stringify(availableCommands, null, 2));
