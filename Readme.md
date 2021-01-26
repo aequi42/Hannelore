@@ -6,6 +6,16 @@ Hanelore ist ein Telegram Chatbot, den wir in einer Chatgruppe unter Freunden ei
 
 Aktuell ist Hannelore als [Zeit](https://zeit.co/) service deployed. Zukünftig könnte jedoch ein direktes Deployment bei AWS in Frage kommen. Das hängt in erster Line davon ab, ob das kostenlose Kontigent bei Zeit ausreicht.
 
+
+
+
+
+SUP BRUHS ?!?!?!?
+
+
+
+
+
 ## Features
 
 ### Badword filter
