@@ -57,7 +57,7 @@ async function handle(update: Update) {
   const match = /^\/gif( ?(.+))?$/gi.exec(update.message.text);
   const query = match[1] || "random";
   const encodedQuery = encodeURIComponent(query);
-  const url = `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${encodedQuery}&rating=R`;
+  const url = `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${encodedQuery}&rating=R&limit=3`;
   try {
     const giphyResponse = await fetch(url);
     const giphyResponseJson = (await giphyResponse.json()) as giphySearchResponse;
