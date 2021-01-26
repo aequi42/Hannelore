@@ -1,5 +1,7 @@
 # Hannelore
 
+Dies ist der Test von Flo
+
 Hanelore ist ein Telegram Chatbot, den wir in einer Chatgruppe unter Freunden einsetzen.
 
 ## Deployment
