@@ -12,6 +12,7 @@
     "telegram-typings": "^4.0.0-beta"
   },
   "scripts": {
+    "develop": "now dev",
     "deploy": "now",
     "build": "node ./scripts/build.js"
   },

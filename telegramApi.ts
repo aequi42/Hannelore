@@ -84,7 +84,8 @@ export async function sendAnimation(
   animationUrl: string,
   chat_id: string | number,
   caption?: string,
-  captionIsHtml = false
+  captionIsHtml = false,
+  inline_keyboard?: InlineKeyboardMarkup["inline_keyboard"]
 ) {
   const payload = {
     chat_id,
@@ -92,9 +93,43 @@ export async function sendAnimation(
     caption,
     disable_notification: true,
     ...(captionIsHtml && ({ parse_mode: "HTML" } as parseMode)),
+    ...(inline_keyboard && { reply_markup: { inline_keyboard } }),
   };
 
   return makeRequest({ method: "sendAnimation", payload });
+}
+
+export async function editMessageMedia(
+  chat_id: string | number,
+  message_id: number,
+  file: string,
+  reply_markup: ReplyMarkup["reply_markup"]
+) {
+  const payload = {
+    chat_id,
+    message_id,
+    media: {
+      type: "animation" as "animation",
+      media: file,
+    },
+    reply_markup
+  };
+
+  return makeRequest({ method: "editMessageMedia", payload });
+}
+
+export async function answerCallbackQuery(
+  callback_query_id: string,
+  text?: string,
+  show_alert = false
+) {
+  const payload = {
+    callback_query_id,
+    text,
+    show_alert,
+  };
+
+  return makeRequest({ method: "answerCallbackQuery", payload });
 }
 
 export async function deleteMessage(
@@ -197,31 +232,60 @@ type sendPhotoParameters = chatId & {
   disable_notification?: boolean;
 };
 type deleteMessageParameters = chatId & { message_id?: number };
+
 type sendAnimationParameters = chatId &
-  parseMode & {
+  parseMode &
+  ReplyMarkup & {
     animation: string;
     caption?: string;
     disable_notification?: boolean;
   };
+
+type ReplyMarkup = {
+  reply_markup?: InlineKeyboardMarkup;
+};
+
 type sendMessageParameters = chatId &
-  parseMode & {
+  parseMode &
+  ReplyMarkup & {
     text: string;
     disable_web_page_preview?: boolean;
     disable_notification?: boolean;
     reply_to_message_id?: number;
-    reply_markup?: InlineKeyboardMarkup;
   };
+
+type answerCallbackQueryParameters = {
+  callback_query_id: string;
+  text?: string;
+  show_alert?: boolean;
+  url?: string;
+  cache_time?: number;
+};
+
+type editMessageMediaParameters = ReplyMarkup & {
+  chat_id: string | number;
+  message_id: number;
+  inline_message_id?: string;
+  media: {
+    type: "animation";
+    media: string;
+  };
+};
+
 type requestParams =
   | { method: "sendDice"; payload: sendDiceParameters }
   | { method: "sendChatAction"; payload: sendChatActionParameters }
   | { method: "sendPhoto"; payload: sendPhotoParameters }
   | { method: "deleteMessage"; payload: deleteMessageParameters }
   | { method: "sendAnimation"; payload: sendAnimationParameters }
+  | { method: "answerCallbackQuery"; payload: answerCallbackQueryParameters }
+  | { method: "editMessageMedia"; payload: editMessageMediaParameters }
   | { method: "sendMessage"; payload: sendMessageParameters };
 
 async function makeRequest({ method, payload }: requestParams) {
   const url = `https://api.telegram.org/bot${API_TOKEN}/${method}`;
   log(`${method} to ${url}`);
+  log(`payload: ${JSON.stringify(payload, null, 2)}`);
   var response = await fetch(url, {
     method: "POST",
     headers: {

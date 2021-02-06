@@ -5,6 +5,7 @@ import { getAllHandler } from "../messagehandlers";
 import { sendMarkupMessage, sendChatAction } from "../telegramApi";
 import { Modify } from "../vendor";
 import { GetAllRegisteredChats } from "../fauna/queries";
+import { handle } from '../messagehandlers/switchGif'
 
 type Request = Modify<
   NowRequest,
@@ -22,13 +23,16 @@ async function chatAllowed(id: number) {
 export default async (req: Request, res: NowResponse) => {
   const { body } = req;
   const startTime = performance.now();
+  log("Incoming Request!", JSON.stringify(body, null, 2));
+  if (body.callback_query) {
+    await handle(body)
+  }
   if (!body.message) {
     //for example edited
     log(`finished, nothing to do`);
     res.end();
     return;
   }
-  log("Incoming Request!", JSON.stringify(body, null, 2));
   if (!(await chatAllowed(body.message.chat.id))) {
     log(
       `chat not in the allowed list (${body.message.chat.id}). abort further execution`
@@ -42,7 +46,7 @@ export default async (req: Request, res: NowResponse) => {
   log(
     `Registered ${handlers.length} handlers: ${handlers
       .map((h) => h.name)
-      .join(",")}`
+      .join(", ")}`
   );
 
   const matchingHandler = handlers.find((h) => h.canHandle(body));

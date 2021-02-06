@@ -52,10 +52,22 @@ function canHandle(update: Update) {
   if (!update.message || !update.message.text) return false;
   return update.message.text.indexOf("/gif") == 0;
 }
+type ImageId = giphySearchResponse["data"][0]["id"];
+function getImageIds(images: giphySearchResponse["data"]) {
+  return images.map((image) => image.id);
+}
+
+function createChangeKeyboard(images: ImageId[]) {
+  const buttons = images.map((image, i) => ({
+    text: `${i}`,
+    callback_data: `/g ${image}`, // /g as identifier for gif-callback
+  }));
+  return [buttons];
+}
 
 async function handle(update: Update) {
   const match = /^\/gif( ?(.+))?$/gi.exec(update.message.text);
-  const query = match[1] || "random";
+  const query = (match.length >= 2 && match[2]) || "random";
   const encodedQuery = encodeURIComponent(query);
   const url = `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${encodedQuery}&rating=R`;
   try {
@@ -67,9 +79,17 @@ async function handle(update: Update) {
         update.message.chat.id
       );
     }
-    const image = getRandomImage(giphyResponseJson)
+    const sources = getImageIds(giphyResponseJson.data).slice(0, 5);
+    const image = getRandomImage(giphyResponseJson);
     const imageUrl = image.images.fixed_height.mp4;
-    return await sendAnimation(imageUrl, update.message.chat.id);
+    const buttons = createChangeKeyboard(sources);
+    return await sendAnimation(
+      imageUrl,
+      update.message.chat.id,
+      undefined,
+      false,
+      buttons
+    );
   } catch (error) {
     return await sendMarkupMessage(
       `Fehler von Giphy:
@@ -79,13 +99,13 @@ async function handle(update: Update) {
   }
 }
 
-function getRandomImage(response: giphySearchResponse){
-  const idx = randomIntFromInterval(0, response.pagination.count -1)
+function getRandomImage(response: giphySearchResponse) {
+  const idx = randomIntFromInterval(0, response.data.length - 1);
   return response.data[idx];
 }
 
-
-function randomIntFromInterval(min:number, max:number) { // min and max included
+function randomIntFromInterval(min: number, max: number) {
+  // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 export default {
