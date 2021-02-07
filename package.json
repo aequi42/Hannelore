@@ -8,8 +8,8 @@
   "devDependencies": {
     "@now/node": "^1.5.0",
     "@types/node-fetch": "^2.5.5",
-    "now": "^17.1.1",
-    "telegram-typings": "^4.0.0-beta"
+    "now": "^21.0.1",
+    "telegram-typings": "^5.0.0"
   },
   "scripts": {
     "develop": "now dev",
@@ -20,7 +20,6 @@
     "apollo-boost": "^0.4.7",
     "cross-fetch": "^3.0.4",
     "form-data": "^3.0.0",
-    "fuzzball": "^1.3.0",
     "graphql": "^15.0.0",
     "graphql-tag": "^2.10.3",
     "node-fetch": "^2.6.1",

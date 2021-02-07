@@ -1,7 +1,7 @@
-import { Update } from "telegram-typings";
-import { sendMessage, sendMarkdownMessage } from "../telegramApi";
+import { sendMessage, sendChatAction } from "../telegramApi";
 import fetch from "node-fetch";
-import { Handler } from "./handler";
+import type { Update } from "telegram-typings";
+import type { Handler } from "./handler";
 
 type chuckNorrisJson = {
   categories: string[];
@@ -24,16 +24,20 @@ async function handle(update: Update) {
   );
   const chuckFactJson = (await chuckFactApiResponse.json()) as chuckNorrisJson;
   const markdown = `${chuckFactJson.value}`;
-  return await sendMarkdownMessage(
+  return await sendMessage(
     markdown,
     update.message.chat.id,
     update.message.message_id
   );
 }
 
+function sendAction(body: Update) {
+  return sendChatAction(body.message.chat.id, "typing");
+}
+
 export default {
   name: "chuckNorris",
-  actionType: "typing",
+  sendAction,
   canHandle,
-  handle
+  handle,
 } as Handler;

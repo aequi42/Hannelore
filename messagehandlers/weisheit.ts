@@ -1,7 +1,7 @@
-import { Update } from "telegram-typings";
-import { sendMarkupMessage } from "../telegramApi";
-import { Handler } from "./handler";
+import { sendChatAction, sendMessage } from "../telegramApi";
 import { GetAllWisdoms } from "../fauna/queries";
+import type { Update } from "telegram-typings";
+import type { Handler } from "./handler";
 
 function canHandle(update: Update) {
   if (!update.message || !update.message.text) return false;
@@ -14,12 +14,15 @@ async function handle(update: Update) {
   const weisheit = allWisdoms[index];
   const formatted = `${weisheit.text}
 - <i>${weisheit.author}</i>`;
-  return sendMarkupMessage(formatted, update.message.chat.id);
+  return sendMessage(formatted, update.message.chat.id, undefined, "HTML");
 }
 
+function sendAction(body: Update) {
+  return sendChatAction(body.message.chat.id, "typing");
+}
 export default {
   name: "weisheit",
-  actionType: "typing",
+  sendAction,
   canHandle,
-  handle
+  handle,
 } as Handler;

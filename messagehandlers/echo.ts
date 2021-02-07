@@ -1,6 +1,6 @@
-import { Update } from "telegram-typings";
 import { sendMessage } from "../telegramApi";
-
+import type { Handler } from "./handler";
+import type { Update } from "telegram-typings";
 
 function canHandle(update: Update) {
   if (!update.message || !update.message.text) return false;
@@ -14,8 +14,13 @@ function handle(update: Update) {
   return sendMessage(`Sehr gerne: "${stringToEcho}"`, update.message.chat.id);
 }
 
+function sendAction(body: Update) {
+  return Promise.resolve();
+}
+
 export default {
   name: "echo",
+  sendAction,
   canHandle,
-  handle
-};
+  handle,
+} as Handler;

@@ -1,59 +1,18 @@
-import { Update } from "telegram-typings";
-import { sendAnimation, sendMessage, sendMarkupMessage } from "../telegramApi";
+import { sendAnimation, sendChatAction, sendMessage } from "../telegramApi";
 import fetch from "node-fetch";
-import { Handler } from "./handler";
+import type { Update } from "telegram-typings";
+import type { Handler } from "./handler";
+import type { GiphyMultipleImagesResponse } from "./types";
 
 const giphyApiKey = process.env.GIPHY_API_KEY;
-type giphyImage = {
-  url: string;
-  width: string;
-  height: string;
-  size: string;
-  mp4: string;
-  mp4_size: string;
-  webp: string;
-  webp_size: string;
-};
-
-type giphyRandomResponse = {
-  data: {
-    type: string;
-    id: string;
-    url: string;
-    slug: string;
-    bitly_gif_url: string;
-    bitly_url: string;
-    embed_url: string;
-    username: string;
-    source: string;
-    title: string;
-    rating: "g" | "pg" | "pg-13" | "r";
-    content_url: string;
-    source_tld: string;
-    source_post_url: string;
-    is_sticker: number;
-    // some more unused
-    images?: {
-      fixed_height: giphyImage;
-    };
-  };
-};
-
-type giphySearchResponse = {
-  data: Array<giphyRandomResponse["data"]>;
-  pagination: {
-    total_count: number;
-    count: number;
-    offset: number;
-  };
-};
 
 function canHandle(update: Update) {
   if (!update.message || !update.message.text) return false;
   return update.message.text.indexOf("/gif") == 0;
 }
-type ImageId = giphySearchResponse["data"][0]["id"];
-function getImageIds(images: giphySearchResponse["data"]) {
+
+type ImageId = GiphyMultipleImagesResponse["data"][0]["id"];
+function getImageIds(images: GiphyMultipleImagesResponse["data"]) {
   return images.map((image) => image.id);
 }
 
@@ -72,7 +31,7 @@ async function handle(update: Update) {
   const url = `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${encodedQuery}&rating=R`;
   try {
     const giphyResponse = await fetch(url);
-    const giphyResponseJson = (await giphyResponse.json()) as giphySearchResponse;
+    const giphyResponseJson = (await giphyResponse.json()) as GiphyMultipleImagesResponse;
     if (!giphyResponseJson.pagination.count) {
       return await sendMessage(
         `Es tut mir wirklich sehr leid ${update.message.from.first_name}, aber ich finde zu "${query}" leider nichts passendes`,
@@ -91,15 +50,17 @@ async function handle(update: Update) {
       buttons
     );
   } catch (error) {
-    return await sendMarkupMessage(
+    return await sendMessage(
       `Fehler von Giphy:
 <pre><code class="json">${JSON.stringify(error, null, 2)}</code></pre>`,
-      update.message.chat.id
+      update.message.chat.id,
+      undefined,
+      "HTML"
     );
   }
 }
 
-function getRandomImage(response: giphySearchResponse) {
+function getRandomImage(response: GiphyMultipleImagesResponse) {
   const idx = randomIntFromInterval(0, response.data.length - 1);
   return response.data[idx];
 }
@@ -108,9 +69,14 @@ function randomIntFromInterval(min: number, max: number) {
   // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+function sendAction(body: Update){
+  return sendChatAction(body.message.chat.id, "upload_video")
+}
+
 export default {
   name: "randomGif",
-  actionType: "upload_video",
+  sendAction,
   canHandle,
   handle,
 } as Handler;
