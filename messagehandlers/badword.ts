@@ -1,7 +1,7 @@
-import { Update } from "telegram-typings";
-import { deleteMessage, sendAnimation } from "../telegramApi";
+import { deleteMessage, sendAnimation, sendChatAction } from "../telegramApi";
 import { extract } from "fuzzball";
-import { Handler } from "./handler";
+import type { Update } from "telegram-typings";
+import type { Handler } from "./handler";
 
 const badWordsWithReplacement: [string, string][] = [
   ["Arsch", "Sitzorgan"],
@@ -78,9 +78,12 @@ function handle(update: Update) {
   return Promise.all([deleteTheMessage, sendResponse]);
 }
 
+function sendAction(body: Update){
+  return sendChatAction(body.message.chat.id, "typing")
+}
 export default {
   name: "badword",
-  actionType: "typing",
+  sendAction,
   canHandle,
   handle
 } as Handler;

@@ -1,7 +1,6 @@
-import { Handler } from "./handler";
+import type { Handler } from "./handler";
 import chuckHandler from "./chuckNorris";
 import echoHandler from "./echo";
-import badword from "./badword";
 import weisheit from "./weisheit";
 import gifs from "./gifs";
 import dice from "./dice";
@@ -16,7 +15,7 @@ const AllHandlers: Handler[] = [
   gifs,
   facts,
   dice,
-  travelPicture
+  travelPicture,
 ];
 
 export function getAllHandler() {

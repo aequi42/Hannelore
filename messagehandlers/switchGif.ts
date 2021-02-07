@@ -1,48 +1,15 @@
 // This handler is different because it isn't called on message but on callback_query
 
-import { Update } from "telegram-typings";
 import {
   answerCallbackQuery,
   editMessageMedia,
-  sendMarkupMessage,
+  sendMessage,
 } from "../telegramApi";
 import fetch from "node-fetch";
+import type { Update } from "telegram-typings";
+import type { GiphySingleImageResponse } from "./types";
 
 const giphyApiKey = process.env.GIPHY_API_KEY;
-type GiphyImage = {
-  url: string;
-  width: string;
-  height: string;
-  size: string;
-  mp4: string;
-  mp4_size: string;
-  webp: string;
-  webp_size: string;
-};
-
-type GiphyResponse = {
-  data: {
-    type: string;
-    id: string;
-    url: string;
-    slug: string;
-    bitly_gif_url: string;
-    bitly_url: string;
-    embed_url: string;
-    username: string;
-    source: string;
-    title: string;
-    rating: "g" | "pg" | "pg-13" | "r";
-    content_url: string;
-    source_tld: string;
-    source_post_url: string;
-    is_sticker: number;
-    // some more unused
-    images?: {
-      fixed_height: GiphyImage;
-    };
-  };
-};
 
 export async function handle(update: Update) {
   const match = /^\/g (.+)?$/gi.exec(update.callback_query.data);
@@ -50,22 +17,24 @@ export async function handle(update: Update) {
   const url = `https://api.giphy.com/v1/gifs/${id}?api_key=${giphyApiKey}`;
   try {
     const giphyResponse = await fetch(url);
-    const giphyResponseJson = (await giphyResponse.json()) as GiphyResponse;
+    const giphyResponseJson = (await giphyResponse.json()) as GiphySingleImageResponse;
     const image = giphyResponseJson.data;
     const imageUrl = image.images.fixed_height.mp4;
     let edit = editMessageMedia(
       update.callback_query.message.chat.id,
       update.callback_query.message.message_id,
       imageUrl,
-      (update.callback_query.message as any).reply_markup
+      update.callback_query.message.reply_markup.inline_keyboard
     );
     let answer = answerCallbackQuery(update.callback_query.id, "Donesky");
     return await Promise.all([edit, answer]);
   } catch (error) {
-    return await sendMarkupMessage(
+    return await sendMessage(
       `Fehler von Giphy:
 <pre><code class="json">${JSON.stringify(error, null, 2)}</code></pre>`,
-      update.callback_query.message.chat.id
+      update.callback_query.message.chat.id,
+      undefined,
+      "HTML"
     );
   }
 }
