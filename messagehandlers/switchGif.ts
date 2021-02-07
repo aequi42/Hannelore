@@ -1,17 +1,22 @@
-// This handler is different because it isn't called on message but on callback_query
-
 import {
   answerCallbackQuery,
   editMessageMedia,
+  sendChatAction,
   sendMessage,
 } from "../telegramApi";
 import fetch from "node-fetch";
 import type { Update } from "telegram-typings";
 import type { GiphySingleImageResponse } from "./types";
+import { Handler } from "./handler";
 
 const giphyApiKey = process.env.GIPHY_API_KEY;
 
-export async function handle(update: Update) {
+function canHandle(update: Update) {
+  if (!update.callback_query || !update.callback_query.data) return false;
+  return update.callback_query.data.indexOf("/g") == 0;
+}
+
+async function handle(update: Update) {
   const match = /^\/g (.+)?$/gi.exec(update.callback_query.data);
   const id = match[1] || "26BROTgFzjf22acJq";
   const url = `https://api.giphy.com/v1/gifs/${id}?api_key=${giphyApiKey}`;
@@ -38,3 +43,16 @@ export async function handle(update: Update) {
     );
   }
 }
+
+function sendAction(_: Update) {
+  return Promise.resolve();
+}
+
+const handler: Handler = {
+  name: "switchGif",
+  canHandle,
+  handle,
+  sendAction,
+};
+
+export default handler;

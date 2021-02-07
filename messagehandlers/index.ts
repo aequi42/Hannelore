@@ -6,6 +6,7 @@ import gifs from "./gifs";
 import dice from "./dice";
 import travelPicture from "./travelPicture";
 import facts from "./facts";
+import switchGif from "./switchGif";
 
 const AllHandlers: Handler[] = [
   // badword,
@@ -16,6 +17,7 @@ const AllHandlers: Handler[] = [
   facts,
   dice,
   travelPicture,
+  switchGif,
 ];
 
 export function getAllHandler() {

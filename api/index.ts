@@ -4,7 +4,6 @@ import type { NowRequest, NowResponse } from "@now/node";
 import { getAllHandler } from "../messagehandlers";
 import type { Modify } from "../vendor";
 import { GetAllRegisteredChats } from "../fauna/queries";
-import { handle } from "../messagehandlers/switchGif";
 
 type Request = Modify<
   NowRequest,
@@ -28,15 +27,7 @@ export default async (req: Request, res: NowResponse) => {
   const { body } = req;
   const startTime = performance.now();
   log("Incoming Request!", JSON.stringify(body, null, 2));
-  if (body.callback_query) {
-    await handle(body);
-  }
-  if (!body.message) {
-    //for example edited
-    log(`finished, nothing to do`);
-    res.end();
-    return;
-  }
+
   if (!(await chatAllowed(body))) {
     log(`chat not in the allowed list! abort further execution`);
     log(`finished! Time elapsed: ${performance.now() - startTime}ms`);
