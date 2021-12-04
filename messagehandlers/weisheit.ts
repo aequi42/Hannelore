@@ -14,7 +14,7 @@ async function handle(update: Update) {
   const weisheit = allWisdoms[index];
   const formatted = `${weisheit.text}
 - <i>${weisheit.author}</i>`;
-  return sendMarkupMessage(formatted, update.message.chat.id);
+  return sendMarkupMessage(formatted, update.message!.chat.id);
 }
 
 export default {

@@ -1,49 +1,53 @@
 import { performance } from "perf_hooks";
 import { Update, Message } from "telegram-typings";
-import { NowRequest, NowResponse } from "@now/node";
+import type { Request as ExpressRequest, Response } from "express";
 import { getAllHandler } from "../messagehandlers";
 import { sendMarkupMessage, sendChatAction } from "../telegramApi";
-import { Modify } from "../vendor";
-import { GetAllRegisteredChats } from "../fauna/queries";
-import { handle } from '../messagehandlers/switchGif'
 
+import { Variables } from "../variables";
+import { handle } from "../messagehandlers/switchGif";
+import { createLogger } from "../logging";
+const log = createLogger("WEBHOOK")
+type Modify<T, R> = Omit<T, keyof R> & R;
 type Request = Modify<
-  NowRequest,
+  ExpressRequest,
   {
     body: Update;
   }
 >;
-
-const log = console.log.bind(null, "[BOT WEBHOOK]");
 async function chatAllowed(id: number) {
-  var allChats = await GetAllRegisteredChats();
-  return allChats.some((cht) => cht.chatId == id);
+  var allChats = Variables.allowedChats;
+  return allChats.some((cht) => cht === id);
 }
 
-export default async (req: Request, res: NowResponse) => {
+export default async (req: Request, res: Response) => {
+
   const { body } = req;
+
   const startTime = performance.now();
-  log("Incoming Request!", JSON.stringify(body, null, 2));
+  log("Debug", "Incoming Request!", JSON.stringify(body, null, 2));
   if (body.callback_query) {
-    await handle(body)
+    await handle(body);
   }
   if (!body.message) {
     //for example edited
-    log(`finished, nothing to do`);
+    log("Debug", `finished, nothing to do`);
     res.end();
     return;
   }
   if (!(await chatAllowed(body.message.chat.id))) {
     log(
+      "Warn",
       `chat not in the allowed list (${body.message.chat.id}). abort further execution`
     );
-    log(`finished! Time elapsed: ${performance.now() - startTime}ms`);
+    log("Debug", `finished! Time elapsed: ${performance.now() - startTime}ms`);
     res.end();
     return;
   }
   const handlers = getAllHandler();
 
   log(
+    "Debug",
     `Registered ${handlers.length} handlers: ${handlers
       .map((h) => h.name)
       .join(", ")}`
@@ -52,12 +56,12 @@ export default async (req: Request, res: NowResponse) => {
   const matchingHandler = handlers.find((h) => h.canHandle(body));
 
   if (!matchingHandler) {
-    log(`no matching handler found!`);
+    log("Warn", `no matching handler found!`);
     res.end();
     return;
   }
 
-  log(`matching handler: ${matchingHandler.name}`);
+  log("Debug", `matching handler: ${matchingHandler.name}`);
   try {
     matchingHandler.actionType &&
       (await sendChatAction(matchingHandler.actionType, body.message.chat.id));
@@ -69,6 +73,6 @@ export default async (req: Request, res: NowResponse) => {
       body.message.chat.id
     );
   }
-  log(`finished! Time elapsed: ${performance.now() - startTime}ms`);
+  log("Debug", `finished! Time elapsed: ${performance.now() - startTime}ms`);
   res.end();
 };

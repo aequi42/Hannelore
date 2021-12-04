@@ -7,8 +7,9 @@ import {
   sendMarkupMessage,
 } from "../telegramApi";
 import fetch from "node-fetch";
+import { Variables } from "../variables";
 
-const giphyApiKey = process.env.GIPHY_API_KEY;
+const giphyApiKey = Variables.giphyApiKey
 type GiphyImage = {
   url: string;
   width: string;
@@ -45,17 +46,19 @@ type GiphyResponse = {
 };
 
 export async function handle(update: Update) {
+  if(!update.callback_query?.data) return
   const match = /^\/g (.+)?$/gi.exec(update.callback_query.data);
-  const id = match[1] || "26BROTgFzjf22acJq";
+  const id = match && match.length >= 1 && match[1] || "26BROTgFzjf22acJq";
   const url = `https://api.giphy.com/v1/gifs/${id}?api_key=${giphyApiKey}`;
   try {
     const giphyResponse = await fetch(url);
     const giphyResponseJson = (await giphyResponse.json()) as GiphyResponse;
     const image = giphyResponseJson.data;
+    if(!image?.images) return
     const imageUrl = image.images.fixed_height.mp4;
     let edit = editMessageMedia(
-      update.callback_query.message.chat.id,
-      update.callback_query.message.message_id,
+      update.callback_query.message!.chat.id,
+      update.callback_query.message!.message_id,
       imageUrl,
       (update.callback_query.message as any).reply_markup
     );
@@ -65,7 +68,7 @@ export async function handle(update: Update) {
     return await sendMarkupMessage(
       `Fehler von Giphy:
 <pre><code class="json">${JSON.stringify(error, null, 2)}</code></pre>`,
-      update.callback_query.message.chat.id
+      update.callback_query.message!.chat.id
     );
   }
 }

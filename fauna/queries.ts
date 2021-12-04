@@ -2,8 +2,9 @@ import ApolloClient from "apollo-boost";
 import gql from "graphql-tag";
 import fetch from "cross-fetch";
 import { Wisdom, RegisteredChat } from "./types";
+import { Variables } from "../variables";
 
-const faunaSecret = process.env.FAUNA_KEY;
+const faunaSecret = Variables.faunaKey;
 
 const client = new ApolloClient({
   fetch,

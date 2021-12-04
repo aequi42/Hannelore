@@ -8,10 +8,10 @@ function canHandle(update: Update) {
 }
 
 function handle(update: Update) {
-  const stringToEcho = update.message.text.substr(
+  const stringToEcho = update.message!.text!.substr(
     "Hannelore, wiederhole:".length
   );
-  return sendMessage(`Sehr gerne: "${stringToEcho}"`, update.message.chat.id);
+  return sendMessage(`Sehr gerne: "${stringToEcho}"`, update.message!.chat.id);
 }
 
 export default {
