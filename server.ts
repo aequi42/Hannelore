@@ -1,4 +1,4 @@
-import { Variables } from "./variables";
+import process from "process";
 import express from "express";
 import handler from "./api";
 import { json } from "body-parser";
@@ -10,6 +10,9 @@ app.use(json());
 
 app.post("/api", handler);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+
+process.once("SIGINT", () => server.close());
+process.once("SIGTERM", () => server.close());

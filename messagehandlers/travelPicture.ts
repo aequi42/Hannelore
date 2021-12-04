@@ -32,10 +32,10 @@ async function handle(update: Update) {
   });
   const directoryItems: getDirectoryContentsResult =
     await client.getDirectoryContents(
-      `/files/${nextcloudUser}/Unternehmungen`,
+      `/files/${nextcloudUser}/Die4Lustigen5`,
       {
         deep: true,
-        glob: "**/verkleinert/*.jpg",
+        glob: "**/*.jpg",
       }
     );
   log("Debug", JSON.stringify(directoryItems));
