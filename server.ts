@@ -4,7 +4,7 @@ import handler from "./api";
 import { json } from "body-parser";
 
 const app = express();
-const port = Variables.port;
+const port = 3000;
 
 app.use(json());
 

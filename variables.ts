@@ -4,12 +4,8 @@ const LogLevels = ["Warn", "Debug", "None"];
 config();
 
 export const Variables = {
-  get port() {
-    return process.env.HANNELORE_PORT ?? 3000;
-  },
   get allowedChats() {
     const envVal = process.env.HANNELORE_ALLOWED_CHATS ?? "";
-
     return envVal.split(",").map(Number);
   },
   get logLevel() {
