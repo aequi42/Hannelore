@@ -8,7 +8,7 @@ function canHandle(update: Update) {
 }
 
 async function handle(update: Update) {
-  return await sendDice(update.message.chat.id);
+  return await sendDice(update.message!.chat.id);
 }
 
 export default {

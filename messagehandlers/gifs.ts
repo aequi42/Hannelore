@@ -2,8 +2,9 @@ import { Update } from "telegram-typings";
 import { sendAnimation, sendMessage, sendMarkupMessage } from "../telegramApi";
 import fetch from "node-fetch";
 import { Handler } from "./handler";
+import { Variables } from "../variables";
 
-const giphyApiKey = process.env.GIPHY_API_KEY;
+const giphyApiKey = Variables.giphyApiKey;
 type giphyImage = {
   url: string;
   width: string;
@@ -66,35 +67,38 @@ function createChangeKeyboard(images: ImageId[]) {
 }
 
 async function handle(update: Update) {
-  const match = /^\/gif( ?(.+))?$/gi.exec(update.message.text);
-  const query = (match.length >= 2 && match[2]) || "random";
+  const message = update.message!;
+  const match = /^\/gif( ?(.+))?$/gi.exec(message.text!);
+  const query = (match && match.length >= 2 && match[2]) || "random";
   const encodedQuery = encodeURIComponent(query);
   const url = `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${encodedQuery}&rating=R`;
   try {
     const giphyResponse = await fetch(url);
-    const giphyResponseJson = (await giphyResponse.json()) as giphySearchResponse;
+    const giphyResponseJson =
+      (await giphyResponse.json()) as giphySearchResponse;
     if (!giphyResponseJson.pagination.count) {
       return await sendMessage(
-        `Es tut mir wirklich sehr leid ${update.message.from.first_name}, aber ich finde zu "${query}" leider nichts passendes`,
-        update.message.chat.id
+        `Es tut mir wirklich sehr leid ${message.from?.first_name}, aber ich finde zu "${query}" leider nichts passendes`,
+        message.chat.id
       );
     }
     const sources = getImageIds(giphyResponseJson.data).slice(0, 5);
     const image = getRandomImage(giphyResponseJson);
-    const imageUrl = image.images.fixed_height.mp4;
+    const imageUrl = image.images?.fixed_height.mp4;
     const buttons = createChangeKeyboard(sources);
-    return await sendAnimation(
-      imageUrl,
-      update.message.chat.id,
-      undefined,
-      false,
-      buttons
-    );
+    if (imageUrl)
+      return await sendAnimation(
+        imageUrl,
+        message.chat.id,
+        undefined,
+        false,
+        buttons
+      );
   } catch (error) {
     return await sendMarkupMessage(
       `Fehler von Giphy:
 <pre><code class="json">${JSON.stringify(error, null, 2)}</code></pre>`,
-      update.message.chat.id
+      message.chat.id
     );
   }
 }

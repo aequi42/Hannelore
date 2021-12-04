@@ -2,12 +2,15 @@ import { Handler } from "./handler";
 import { Update } from "telegram-typings";
 import { createClient } from "webdav";
 import { sendPhoto } from "../telegramApi";
+import { createLogger } from "../logging";
+import { Variables } from "../variables";
 
-const nextcloudUrl = process.env.NEXTCLOUD_URL;
-const nextcloudUser = process.env.NEXTCLOUD_USER;
-const nextcloudPassword = process.env.NEXTCLOUD_PASSWORD;
+const nextcloudUrl = Variables.nextcloudHost;
+const nextcloudUser = Variables.nextCloudUser;
+const nextcloudPassword = Variables.nextCloudPassword;
 
-const log = console.log.bind(null, "[TRAVEL PICTURE]");
+const log = createLogger("TRAVEL PICTURE");
+
 type getDirectoryContentsResult = {
   filename: string;
   basename: string;
@@ -25,32 +28,30 @@ function canHandle(update: Update) {
 async function handle(update: Update) {
   const client = createClient(nextcloudUrl, {
     username: nextcloudUser,
-    password: nextcloudPassword
+    password: nextcloudPassword,
   });
-  const directoryItems: getDirectoryContentsResult = await client.getDirectoryContents(
-    `/files/${nextcloudUser}/Unternehmungen`,
-    {
-      deep: true,
-      glob: "**/verkleinert/*.jpg"
-    }
-  );
-  log(directoryItems)
-  const correctSize = directoryItems.filter(i => i.size < 10000000);
+  const directoryItems: getDirectoryContentsResult =
+    await client.getDirectoryContents(
+      `/files/${nextcloudUser}/Unternehmungen`,
+      {
+        deep: true,
+        glob: "**/verkleinert/*.jpg",
+      }
+    );
+  log("Debug", JSON.stringify(directoryItems));
+  const correctSize = directoryItems.filter((i) => i.size < 10000000);
   const count = correctSize.length;
   const randomIdx = Math.floor(Math.random() * (count + 1));
   const image = correctSize[randomIdx];
   const { filename } = image;
   const contentBuffer = await client.getFileContents(filename);
-  log(contentBuffer)
-  return await sendPhoto(
-    contentBuffer,
-    update.message.chat.id
-  );
+  log("Debug", contentBuffer);
+  return await sendPhoto(contentBuffer, update.message!.chat.id);
 }
 
 export default {
   name: "travelPicture",
   actionType: "upload_photo",
   canHandle,
-  handle
+  handle,
 } as Handler;

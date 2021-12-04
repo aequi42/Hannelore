@@ -26,8 +26,8 @@ async function handle(update: Update) {
   const markdown = `${chuckFactJson.value}`;
   return await sendMarkdownMessage(
     markdown,
-    update.message.chat.id,
-    update.message.message_id
+    update.message!.chat.id,
+    update.message!.message_id
   );
 }
 

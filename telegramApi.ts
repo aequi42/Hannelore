@@ -1,8 +1,10 @@
 import fetch, { Blob } from "node-fetch";
 import NodeFormData from "form-data";
-import { promises } from "fs";
-const API_TOKEN = process.env.BOT_TOKEN;
-const log = console.log.bind(null, "[TELEGRAM API]");
+import { Variables } from "./variables";
+import { createLogger } from "./logging";
+
+const API_TOKEN = Variables.telegramBotToken;
+const log = createLogger("TELEGRAM API")
 
 type SendMessage = {
   chat_id: string | number;
@@ -173,7 +175,7 @@ export async function sendPhoto(
       }
     );
     var json = await result.json();
-    log(JSON.stringify(json, null, 2));
+    log("Debug", JSON.stringify(json, null, 2));
     return result;
   } catch (e) {
     console.error(e);
@@ -284,8 +286,8 @@ type requestParams =
 
 async function makeRequest({ method, payload }: requestParams) {
   const url = `https://api.telegram.org/bot${API_TOKEN}/${method}`;
-  log(`${method} to ${url}`);
-  log(`payload: ${JSON.stringify(payload, null, 2)}`);
+  log("Debug",`${method} to ${url}`);
+  log("Debug",`payload: ${JSON.stringify(payload, null, 2)}`);
   var response = await fetch(url, {
     method: "POST",
     headers: {
@@ -294,6 +296,6 @@ async function makeRequest({ method, payload }: requestParams) {
     body: JSON.stringify(payload),
   });
   const json = await response.json();
-  log(JSON.stringify(json, null, 2));
+  log("Debug",JSON.stringify(json, null, 2));
   return response;
 }
